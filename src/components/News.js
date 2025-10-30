@@ -26,10 +26,10 @@ export default function News(props){
         setTotalResults(data.totalResults);
 
         props.totalProgress(100);
-    }
+        }
     
         fetchNews();
-    },[props.category, props.apiKey, page, props.totalProgress]);
+    },[]);
 
     const fetchMoreData=async()=>{
         let nextPage=page+1;
