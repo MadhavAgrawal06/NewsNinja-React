@@ -16,7 +16,7 @@ export default function News(props){
         const fetchNews=async()=>{
         props.totalProgress(0);
         setLoading(true);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=16`);
+        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${page}&pageSize=16`);
         props.totalProgress(30);
         let data=await res.json();
         props.totalProgress(70);
@@ -34,13 +34,12 @@ export default function News(props){
     const fetchMoreData=async()=>{
         let nextPage=page+1;
         setPage(page+1);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=${props.apiKey}&page=${nextPage}&pageSize=16`);
+        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${nextPage}&pageSize=16`);
         let data=await res.json();
 
         setArticles(articles.concat(data.articles));
         setTotalResults(data.totalResults);
         console.log("Articles length:", articles.length, "Total:", totalResults);
-
 
     }
         return(
