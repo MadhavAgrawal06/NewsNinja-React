@@ -6,6 +6,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default function News(props){
 
+    const { category, totalProgress } = props;
+
     const [articles,setArticles]=useState([]);
     const [loading,setLoading]=useState(false);
     const [page,setPage]=useState(1);
@@ -14,27 +16,28 @@ export default function News(props){
     useEffect(()=>{
         
         const fetchNews=async()=>{
-        props.totalProgress(0);
+        totalProgress(0);
         setLoading(true);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${page}&pageSize=16`);
-        props.totalProgress(30);
+        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${page}&pageSize=16`);
+        totalProgress(30);
         let data=await res.json();
-        props.totalProgress(70);
+        totalProgress(70);
 
         setArticles(data.articles);
         setLoading(false);
         setTotalResults(data.totalResults);
 
-        props.totalProgress(100);
+        totalProgress(100);
         }
     
         fetchNews();
-    },[]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[category]);
 
     const fetchMoreData=async()=>{
         let nextPage=page+1;
         setPage(page+1);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${props.category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${nextPage}&pageSize=16`);
+        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${nextPage}&pageSize=16`);
         let data=await res.json();
 
         setArticles(articles.concat(data.articles));
@@ -44,7 +47,7 @@ export default function News(props){
     }
         return(
             <> 
-                <h1 className='text-center mt-3 mb-1 mx-1'>NewNinja - Top {props.category.charAt(0).toUpperCase()+props.category.slice(1)} Headlines</h1>
+                <h1 className='text-center mt-3 mb-1 mx-1'>NewNinja - Top {category.charAt(0).toUpperCase()+category.slice(1)} Headlines</h1>
                 {loading && <Spinner/>}
                 <InfiniteScroll
                     dataLength={articles.length}
