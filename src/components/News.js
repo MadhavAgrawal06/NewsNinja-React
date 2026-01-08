@@ -5,27 +5,27 @@ import Spinner  from './Spinner.js'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 export default function News(props){
-
+    const apiKey = process.env.REACT_APP_GNEWS_KEY;
     const { category, totalProgress } = props;
 
     const [articles,setArticles]=useState([]);
     const [loading,setLoading]=useState(false);
     const [page,setPage]=useState(1);
-    const [totalResults,setTotalResults]=useState(0);
+    const [totalArticles,setTotalArticles]=useState(0);
 
     useEffect(()=>{
         
         const fetchNews=async()=>{
         totalProgress(0);
         setLoading(true);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${page}&pageSize=16`);
+        let res=await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${page}&max=10`);
         totalProgress(30);
         let data=await res.json();
         totalProgress(70);
 
         setArticles(data.articles);
         setLoading(false);
-        setTotalResults(data.totalResults);
+        setTotalArticles(data.totalArticles);
 
         totalProgress(100);
         }
@@ -36,13 +36,16 @@ export default function News(props){
 
     const fetchMoreData=async()=>{
         let nextPage=page+1;
-        setPage(page+1);
-        let res=await fetch(`https://newsapi.org/v2/top-headlines?category=${category}&apiKey=8af368a850524bd2af513e9b3ef9d126&page=${nextPage}&pageSize=16`);
+        
+        let res=await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${nextPage}&max=10`);
         let data=await res.json();
 
+        if(data.articles){
         setArticles(articles.concat(data.articles));
-        setTotalResults(data.totalResults);
-        console.log("Articles length:", articles.length, "Total:", totalResults);
+        setTotalArticles(data.totalArticles);
+        setPage(nextPage);
+        console.log("Articles length:", articles.length, "Total:", totalArticles);
+        }
 
     }
         return(
@@ -52,7 +55,7 @@ export default function News(props){
                 <InfiniteScroll
                     dataLength={articles.length}
                     next={fetchMoreData}
-                    hasMore={articles.length < totalResults}
+                    hasMore={articles.length < totalArticles}
                     loader={<Spinner/>}
                 >
                 
@@ -60,11 +63,11 @@ export default function News(props){
                 <div className="row">
                 {articles.map((element)=>{
                     return  <div className='col-md-3 my-4 d-flex' key={element.url}>
-                                 <NewsItem title={element.title?element.title:"No title"} 
+                                 <NewsItem title={element.title?element.title.slice(0,70):"No title"} 
                                       description={element.description?element.description.slice(0,110):"No description"} 
-                                      imgUrl={element.urlToImage?element.urlToImage:"https://img.freepik.com/free-vector/news-grunge-text_460848-9369.jpg"}
-                                      author={element.author?element.author:"Anonymous"}
-                                      date={new Date(element.publishedAt).toDateString()}
+                                      imgUrl={element.image?element.image:"https://img.freepik.com/free-vector/news-grunge-text_460848-9369.jpg"}
+                                      author={element.source.name?element.source.name:"Anonymous"}
+                                      date={element.publishedAt? new Date(element.publishedAt).toDateString():"Unknown Date"}
                                       source={element.source.name} 
                                       goToUrl={element.url}/>
                             </div>
