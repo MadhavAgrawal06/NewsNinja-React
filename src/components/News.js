@@ -19,7 +19,7 @@ export default function News(props){
         totalProgress(0);
         setLoading(true);
         
-        let res = await fetch(`/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${page}&max=10`);  
+        let res = await fetch(`/news-proxy/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${page}&max=10`);  
 
         totalProgress(30);
         let data=await res.json();
@@ -39,7 +39,7 @@ export default function News(props){
     const fetchMoreData=async()=>{
         let nextPage=page+1;
 
-        let res = await fetch(`/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${nextPage}&max=10`);
+        let res = await fetch(`/news-proxy/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${nextPage}&max=10`);
         let data=await res.json();
 
         if(data.articles){

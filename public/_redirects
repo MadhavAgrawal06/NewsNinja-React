@@ -1,1 +1,6 @@
-/* https://gnews.io/api/v4/:splat 200
+
+# 1. This rule handles your News API proxy to bypass CORS
+/news-proxy/* https://gnews.io/api/v4/:splat 200
+
+# 2. This rule handles React Routing (fixes 404 on reload)
+/* /index.html 200
