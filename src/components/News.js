@@ -18,7 +18,9 @@ export default function News(props){
         const fetchNews=async()=>{
         totalProgress(0);
         setLoading(true);
-        let res=await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${page}&max=10`);
+        
+        let res = await fetch(`/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${page}&max=10`);  
+
         totalProgress(30);
         let data=await res.json();
         totalProgress(70);
@@ -36,8 +38,8 @@ export default function News(props){
 
     const fetchMoreData=async()=>{
         let nextPage=page+1;
-        
-        let res=await fetch(`https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${nextPage}&max=10`);
+
+        let res = await fetch(`/top-headlines?category=${category}&lang=en&country=in&apikey=${apiKey}&page=${nextPage}&max=10`);
         let data=await res.json();
 
         if(data.articles){
